@@ -40,4 +40,8 @@ class ProductsProvider with ChangeNotifier {
     // If I were to do return _items, I'd be returning a pointer
     return [..._items];
   }
+
+  Product findProductById(String id) {
+    return _items.firstWhere((prod) => prod.id == id);
+  }
 }
