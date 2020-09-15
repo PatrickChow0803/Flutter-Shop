@@ -5,10 +5,14 @@ import 'package:flutter_shop/widgets/product_item.dart';
 import 'package:provider/provider.dart';
 
 class ProductsGrid extends StatelessWidget {
+  final bool showFavorites;
+
+  ProductsGrid(this.showFavorites);
+
   @override
   Widget build(BuildContext context) {
     final productsData = Provider.of<ProductsProvider>(context);
-    final products = productsData.items;
+    final products = showFavorites ? productsData.favoriteItems : productsData.items;
 
     return GridView.builder(
       padding: EdgeInsets.all(10.0),
@@ -26,6 +30,8 @@ class ProductsGrid extends StatelessWidget {
       return ChangeNotifierProvider(
       // Return the data that you want to provide
       create: (ctx) => ProductsProvider(),
+
+      Use ChangeNotifierProvider here because I want to provide the data to ProductItem
      */
       itemBuilder: ((ctx, index) => ChangeNotifierProvider.value(
             value: products[index],

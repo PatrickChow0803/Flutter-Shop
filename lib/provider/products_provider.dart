@@ -35,13 +35,33 @@ class ProductsProvider with ChangeNotifier {
     ),
   ];
 
+  var _showFavoritesOnly = false;
+
   List<Product> get items {
+//    if (_showFavoritesOnly) {
+//      return [..._items].where((product) => product.isFavorite).toList();
+//    } else {
     // [...] returns a copy of the _items
     // If I were to do return _items, I'd be returning a pointer
     return [..._items];
+//    }
+  }
+
+  List<Product> get favoriteItems {
+    return [...items].where((product) => product.isFavorite).toList();
   }
 
   Product findProductById(String id) {
     return _items.firstWhere((prod) => prod.id == id);
   }
+
+//  void showFavoritesOnly() {
+//    _showFavoritesOnly = true;
+//    notifyListeners();
+//  }
+//
+//  void showAll() {
+//    _showFavoritesOnly = false;
+//    notifyListeners();
+//  }
 }
