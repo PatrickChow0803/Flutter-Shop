@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_shop/provider/cart.dart';
 import 'package:flutter_shop/provider/product.dart';
 import 'package:flutter_shop/screens/product_detail_screen.dart';
 import 'package:provider/provider.dart';
@@ -18,7 +19,9 @@ class ProductItem extends StatelessWidget {
   Widget build(BuildContext context) {
     // This takes the closest product available. Which is in the grid. Look at products_grid's
     // GridView builder and look at ProductItem widget using it.
+    // listen: false in order to stop this from rebuilding when either product/cart changes
     final product = Provider.of<Product>(context, listen: false);
+    final cart = Provider.of<Cart>(context, listen: false);
     print('Widget has been rebuilt');
     // Use ClipRRect here to make the boxes circular since GridTile doesn't have a borderRadius
     return ClipRRect(
@@ -64,7 +67,9 @@ class ProductItem extends StatelessWidget {
           backgroundColor: Colors.black87,
           trailing: IconButton(
             icon: Icon(Icons.shopping_cart),
-            onPressed: () {},
+            onPressed: () {
+              cart.addItem(product.id, product.price, product.title);
+            },
             color: Theme.of(context).accentColor,
           ),
         ),
