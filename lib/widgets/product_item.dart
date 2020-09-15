@@ -18,8 +18,8 @@ class ProductItem extends StatelessWidget {
   Widget build(BuildContext context) {
     // This takes the closest product available. Which is in the grid. Look at products_grid's
     // GridView builder and look at ProductItem widget using it.
-    final product = Provider.of<Product>(context);
-
+    final product = Provider.of<Product>(context, listen: false);
+    print('Widget has been rebuilt');
     // Use ClipRRect here to make the boxes circular since GridTile doesn't have a borderRadius
     return ClipRRect(
       borderRadius: BorderRadius.circular(10.0),
@@ -44,12 +44,18 @@ class ProductItem extends StatelessWidget {
           ),
         ),
         footer: GridTileBar(
-          leading: IconButton(
-            icon: Icon(product.isFavorite ? Icons.favorite : Icons.favorite_border),
-            onPressed: () {
-              product.toggleFavoriteStatus();
-            },
-            color: Theme.of(context).accentColor,
+          // Consumer can be used to only rebuild parts of the widget tree instead of the entire widget.
+          // Best to only wrap something in a consumer widget if you expect it to change.
+          // By having the consumer here, only the IconButton gets rebuilt. The above must be listen: false
+          // in order to have consumer work properly.
+          leading: Consumer<Product>(
+            builder: (context, product, child) => IconButton(
+              icon: Icon(product.isFavorite ? Icons.favorite : Icons.favorite_border),
+              onPressed: () {
+                product.toggleFavoriteStatus();
+              },
+              color: Theme.of(context).accentColor,
+            ),
           ),
           title: Text(
             product.title,
