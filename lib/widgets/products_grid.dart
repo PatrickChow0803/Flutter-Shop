@@ -18,9 +18,19 @@ class ProductsGrid extends StatelessWidget {
           crossAxisSpacing: 10.0, // The spacing between the columns
           mainAxisSpacing: 10.0 // The spacing between the rows
           ),
-      itemBuilder: ((ctx, index) => ChangeNotifierProvider(
-            create: (c) => products[index],
+
+      /*
+      Instead of using the commented out method below, use ChangeNotifierProvider.value method below when
+      using a provider on a list or a grid. .value makes sure that the provider works even if the
+      data changes for a widget.
+      return ChangeNotifierProvider(
+      // Return the data that you want to provide
+      create: (ctx) => ProductsProvider(),
+     */
+      itemBuilder: ((ctx, index) => ChangeNotifierProvider.value(
+            value: products[index],
             child: ProductItem(
+                // These are no longer needed because of provider.
 //              title: products[index].title,
 //              id: products[index].id,
 //              imageUrl: products[index].imageUrl,

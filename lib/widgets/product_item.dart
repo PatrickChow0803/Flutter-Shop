@@ -16,6 +16,8 @@ class ProductItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // This takes the closest product available. Which is in the grid. Look at products_grid's
+    // GridView builder and look at ProductItem widget using it.
     final product = Provider.of<Product>(context);
 
     // Use ClipRRect here to make the boxes circular since GridTile doesn't have a borderRadius

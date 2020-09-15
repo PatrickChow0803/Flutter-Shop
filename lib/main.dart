@@ -9,8 +9,17 @@ void main() => runApp(MyApp());
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
+    /*
+      Instead of using the commented out method below, use ChangeNotifierProvider.value method below when
+      using a provider on a list or a grid. .value makes sure that the provider works even if the
+      data changes for a widget.
+      return ChangeNotifierProvider(
+      // Return the data that you want to provide
       create: (ctx) => ProductsProvider(),
+     */
+    return ChangeNotifierProvider.value(
+      // Return the data that you want to provide
+      value: ProductsProvider(),
       child: MaterialApp(
         title: 'MyShop',
         theme: ThemeData(
