@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_shop/models/product.dart';
+import 'file:///C:/Users/Agela/AndroidStudioProjects/Max/Flutter-Shop/flutter_shop/lib/provider/product.dart';
 import 'package:flutter_shop/provider/products_provider.dart';
 import 'package:flutter_shop/widgets/product_item.dart';
 import 'package:provider/provider.dart';
@@ -18,13 +18,14 @@ class ProductsGrid extends StatelessWidget {
           crossAxisSpacing: 10.0, // The spacing between the columns
           mainAxisSpacing: 10.0 // The spacing between the rows
           ),
-      itemBuilder: ((ctx, index) {
-        return ProductItem(
-          title: products[index].title,
-          id: products[index].id,
-          imageUrl: products[index].imageUrl,
-        );
-      }),
+      itemBuilder: ((ctx, index) => ChangeNotifierProvider(
+            create: (c) => products[index],
+            child: ProductItem(
+//              title: products[index].title,
+//              id: products[index].id,
+//              imageUrl: products[index].imageUrl,
+                ),
+          )),
       itemCount: products.length,
     );
   }

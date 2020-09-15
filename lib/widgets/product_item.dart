@@ -1,19 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_shop/provider/product.dart';
 import 'package:flutter_shop/screens/product_detail_screen.dart';
+import 'package:provider/provider.dart';
 
 class ProductItem extends StatelessWidget {
-  final String id;
-  final String title;
-  final String imageUrl;
-
-  ProductItem({
-    this.id,
-    this.title,
-    this.imageUrl,
-  });
+//  final String id;
+//  final String title;
+//  final String imageUrl;
+//
+//  ProductItem({
+//    this.id,
+//    this.title,
+//    this.imageUrl,
+//  });
 
   @override
   Widget build(BuildContext context) {
+    final product = Provider.of<Product>(context);
+
     // Use ClipRRect here to make the boxes circular since GridTile doesn't have a borderRadius
     return ClipRRect(
       borderRadius: BorderRadius.circular(10.0),
@@ -29,22 +33,24 @@ class ProductItem extends StatelessWidget {
 //            );
             Navigator.of(context).pushNamed(
               ProductDetailScreen.nameRoute,
-              arguments: id,
+              arguments: product.id,
             );
           },
           child: Image.network(
-            imageUrl,
+            product.imageUrl,
             fit: BoxFit.cover,
           ),
         ),
         footer: GridTileBar(
           leading: IconButton(
-            icon: Icon(Icons.favorite),
-            onPressed: () {},
+            icon: Icon(product.isFavorite ? Icons.favorite : Icons.favorite_border),
+            onPressed: () {
+              product.toggleFavoriteStatus();
+            },
             color: Theme.of(context).accentColor,
           ),
           title: Text(
-            title,
+            product.title,
             textAlign: TextAlign.center,
           ),
           backgroundColor: Colors.black87,

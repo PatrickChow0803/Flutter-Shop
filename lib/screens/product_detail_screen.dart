@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_shop/models/product.dart';
+import 'file:///C:/Users/Agela/AndroidStudioProjects/Max/Flutter-Shop/flutter_shop/lib/provider/product.dart';
 import 'package:flutter_shop/provider/products_provider.dart';
 import 'package:provider/provider.dart';
 

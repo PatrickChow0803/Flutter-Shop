@@ -1,6 +1,10 @@
 import 'package:flutter/foundation.dart';
 
-class Product {
+// This class used to be in the models package.
+// This was moved to the provider package because isFavorite is dynamic.
+// I want to modify the UI because isFavorite will change.
+
+class Product with ChangeNotifier {
   final String id;
   final String title;
   final String description;
@@ -16,4 +20,9 @@ class Product {
     @required this.imageUrl,
     this.isFavorite = false,
   });
+
+  void toggleFavoriteStatus() {
+    isFavorite = !isFavorite;
+    notifyListeners();
+  }
 }
