@@ -58,6 +58,7 @@ class CartScreen extends StatelessWidget {
                 // cart.items is a map. In order to get the values from the map, use .values
                 // .values gives an iterable, which you should turn into a list and look at that list's at an index
                 id: cart.items.values.toList()[index].id,
+                productId: cart.items.keys.toList()[index],
                 title: cart.items.values.toList()[index].title,
                 quantity: cart.items.values.toList()[index].quantity,
                 price: cart.items.values.toList()[index].price,
