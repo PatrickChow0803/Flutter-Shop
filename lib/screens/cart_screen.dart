@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 // show Cart makes it so that only the class named Cart within the cart.dart file is implemented
 import '../provider/cart.dart' show Cart;
 import '../widgets/cart_item.dart';
+import '../provider/orders.dart';
 
 class CartScreen extends StatelessWidget {
   static const routeName = '/cart';
@@ -45,7 +46,15 @@ class CartScreen extends StatelessWidget {
                       'Order Now',
                       style: TextStyle(color: Theme.of(context).primaryColor),
                     ),
-                    onPressed: () {},
+                    onPressed: () {
+                      // listen: false here because idc about changes in the order
+                      // I only care about the changes in the cart in this screen.
+                      Provider.of<Orders>(context, listen: false).addOrder(
+                        cart.items.values.toList(),
+                        cart.totalAmount,
+                      );
+                      cart.clearCart();
+                    },
                   )
                 ],
               ),
