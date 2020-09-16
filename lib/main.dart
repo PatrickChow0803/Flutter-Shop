@@ -5,6 +5,7 @@ import 'package:flutter_shop/screens/product_detail_screen.dart';
 import 'package:flutter_shop/screens/products_overview_screen.dart';
 import 'package:provider/provider.dart';
 import 'screens/cart_screen.dart';
+import 'provider/orders.dart';
 
 void main() => runApp(MyApp());
 
@@ -28,6 +29,9 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider.value(
           // Return the data that you want to provide
           value: Cart(),
+        ),
+        ChangeNotifierProvider.value(
+          value: Orders(),
         ),
       ],
       child: MaterialApp(
