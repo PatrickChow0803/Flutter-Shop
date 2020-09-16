@@ -17,10 +17,14 @@ class CartItem {
 class Cart with ChangeNotifier {
   // The string in this map is used as a key.
   // Might make more since to remember _items as the actual cart.
-  Map<String, CartItem> _items;
+  Map<String, CartItem> _items = {};
 
   Map<String, CartItem> get items {
     return {..._items};
+  }
+
+  int get itemCount {
+    return _items == null ? 0 : _items.length;
   }
 
   void addItem(String productId, double price, String title) {
@@ -50,5 +54,6 @@ class Cart with ChangeNotifier {
         ),
       );
     }
+    notifyListeners();
   }
 }
