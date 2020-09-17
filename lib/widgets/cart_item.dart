@@ -39,6 +39,34 @@ class CartItem extends StatelessWidget {
         // I do care about changes inside of the cart_screen though,
         Provider.of<Cart>(context, listen: false).removeItem(productId);
       },
+      // confirmDismiss is all the code for alerting about the removal of a product from the cart.
+      confirmDismiss: (direction) {
+        // confirmDismiss requires a Boolean to be returned.
+        // showDialog is a Future<bool>, therefore return showDialog here.
+        return showDialog(
+          context: context,
+          builder: (ctx) => AlertDialog(
+            title: Text('Are you sure?'),
+            content: Text('Do you want to remove the item from the cart?'),
+            actions: [
+              FlatButton(
+                child: Text('No'),
+                onPressed: () {
+                  // This passed the value of false to showDialog
+                  Navigator.of(context).pop(false);
+                },
+              ),
+              FlatButton(
+                // This passed the value of true to showDialog
+                child: Text('Yes'),
+                onPressed: () {
+                  Navigator.of(context).pop(true);
+                },
+              ),
+            ],
+          ),
+        );
+      },
       child: Card(
         margin: EdgeInsets.symmetric(
           // horizontal value should be the same value of the margin inside cart_screen
