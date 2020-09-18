@@ -126,6 +126,19 @@ class _EditProductScreenState extends State<EditProductScreen> {
                 onFieldSubmitted: (value) {
                   FocusScope.of(context).requestFocus(_descriptionFocusNode);
                 },
+
+                // The value that is passed back is a string type.
+                validator: (value) {
+                  if (value.isEmpty) return 'Please enter a price';
+
+                  // Try to parse the value. If it isn't parsable, there's an error
+                  if (double.tryParse(value) == null) return 'Please enter a valid number';
+
+                  if (double.parse(value) <= 0) return 'Please enter a number greater than zero.';
+
+                  return null;
+                },
+
                 // Creating a new Product each time onSaved is called since all the variables of a product are final
                 onSaved: (value) {
                   _editedProduct = Product(
@@ -142,6 +155,14 @@ class _EditProductScreenState extends State<EditProductScreen> {
                 maxLines: 3,
                 focusNode: _descriptionFocusNode,
                 keyboardType: TextInputType.multiline,
+
+                validator: (value) {
+                  if (value.isEmpty) return 'Please enter a description';
+
+                  if (value.length < 10) return 'Description should be at least 10 characters long';
+
+                  return null;
+                },
 
                 // Creating a new Product each time onSaved is called since all the variables of a product are final
                 onSaved: (value) {
@@ -184,6 +205,19 @@ class _EditProductScreenState extends State<EditProductScreen> {
                       // That's why textInputAction: is set to TextInputAction.done
                       controller: _imageUrlController,
                       focusNode: _imageUrlFocusNode,
+
+                      validator: (value) {
+                        if (value.isEmpty) return 'Please enter an Image Url';
+
+                        if (!value.startsWith('http') && !value.startsWith('https'))
+                          return 'Please enter a valid Url';
+
+                        if (!value.endsWith('png') &&
+                            !value.endsWith('jpg') &&
+                            !value.endsWith('jpeg')) return 'Please enter a valid image Url';
+
+                        return null;
+                      },
                       // Creating a new Product each time onSaved is called since all the variables of a product are final
                       onSaved: (value) {
                         _editedProduct = Product(
