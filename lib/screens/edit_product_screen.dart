@@ -50,6 +50,13 @@ class _EditProductScreenState extends State<EditProductScreen> {
   }
 
   void _saveForm() {
+    // This will trigger all the validators
+    // will return true if there's no error, else false if there's at least one error
+    final isValid = _form.currentState.validate();
+
+    // Prevents the follow code to not be run if isValid isn't true
+    if (!isValid) return;
+
     // This is a method provided by the form widget that will save the form
     // This triggers a method on every TextFormField that will take all the value entered
     // into a global map.
@@ -86,6 +93,16 @@ class _EditProductScreenState extends State<EditProductScreen> {
                 // This will be called whenever the textInputAction is pressed
                 onFieldSubmitted: (value) {
                   FocusScope.of(context).requestFocus(_priceFocusNode);
+                },
+                // value is the text entered
+                // The return string is the error response that you want to give to the user.
+                // if return null is reached, that means that no problems occured
+                validator: (value) {
+                  if (value.isEmpty)
+                    return 'Please enter a value';
+                  else {
+                    return null;
+                  }
                 },
 
                 // Creating a new Product each time onSaved is called since all the variables of a product are final
