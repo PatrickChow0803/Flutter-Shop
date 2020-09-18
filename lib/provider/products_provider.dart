@@ -82,6 +82,11 @@ class ProductsProvider with ChangeNotifier {
     }
   }
 
+  void deleteProduct(String id) {
+    _items.removeWhere((product) => product.id == id);
+    notifyListeners();
+  }
+
 //  void showFavoritesOnly() {
 //    _showFavoritesOnly = true;
 //    notifyListeners();
