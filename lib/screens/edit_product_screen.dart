@@ -10,6 +10,15 @@ class EditProductScreen extends StatefulWidget {
 
 class _EditProductScreenState extends State<EditProductScreen> {
   final _priceFocusNode = FocusNode();
+  final _descriptionFocusNode = FocusNode();
+
+  // Have to get rid of the focus nodes otherwise they'll just stay here and cause a memory leak.
+  @override
+  void dispose() {
+    _priceFocusNode.dispose();
+    _descriptionFocusNode.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,6 +47,16 @@ class _EditProductScreenState extends State<EditProductScreen> {
                 // Makes it so that only numbers can be entered in the soft keyboard
                 keyboardType: TextInputType.number,
                 focusNode: _priceFocusNode,
+                onFieldSubmitted: (value) {
+                  FocusScope.of(context).requestFocus(_descriptionFocusNode);
+                },
+              ),
+              TextFormField(
+                decoration: InputDecoration(labelText: 'Description'),
+                maxLines: 3,
+                focusNode: _descriptionFocusNode,
+                keyboardType: TextInputType.multiline,
+                // This will be called whenever the textInputAction is pressed
               ),
             ],
           ),
