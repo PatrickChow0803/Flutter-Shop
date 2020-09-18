@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import '../provider/product.dart';
+import '../provider/products_provider.dart';
+import 'package:provider/provider.dart';
 
 // Stateful here because have to mange user input
 class EditProductScreen extends StatefulWidget {
@@ -62,10 +64,14 @@ class _EditProductScreenState extends State<EditProductScreen> {
     // into a global map.
     _form.currentState.save();
 
-    print(_editedProduct.title);
-    print(_editedProduct.description);
-    print(_editedProduct.price);
-    print(_editedProduct.imageUrl);
+//    print(_editedProduct.title);
+//    print(_editedProduct.description);
+//    print(_editedProduct.price);
+//    print(_editedProduct.imageUrl);
+
+//    Adds the new product. Listen is false because idc about changes to the list, I just want to perform an action
+    Provider.of<ProductsProvider>(context, listen: false).addProduct(_editedProduct);
+    Navigator.of(context).pop();
   }
 
   @override
