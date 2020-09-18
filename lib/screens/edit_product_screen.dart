@@ -24,11 +24,50 @@ class _EditProductScreenState extends State<EditProductScreen> {
   // This is the product that the user is trying to edit
   var _editedProduct = Product(id: null, title: '', price: 0, description: '', imageUrl: '');
 
+  var _isInit = true;
+
+  var _initValues = {
+    'title': '',
+    'description': '',
+    'price': '',
+    'imageUrl': '',
+  };
+
   @override
   void initState() {
     // Tells Flutter to execute _updateImageUrl whenever focus changes
     _imageUrlFocusNode.addListener(_updateImageUrl);
     super.initState();
+  }
+
+  // runs before build is executed
+  // the if is there to make sure that this method doesn't run constantly
+  @override
+  void didChangeDependencies() {
+    // Check to see if the product is initialized already. Aka: Does the product need to be edited?
+    if (_isInit) {
+      // gets the productId passed from the user_product_item.dart widget
+      final productId = ModalRoute.of(context).settings.arguments as String;
+
+      // Checks to see if a product was passed or not.
+      // if it was passed, then set the initial values.
+      if (productId != null) {
+        _editedProduct =
+            Provider.of<ProductsProvider>(context, listen: false).findProductById(productId);
+        _initValues = {
+          'title': _editedProduct.title,
+          'description': _editedProduct.description,
+          'price': _editedProduct.price.toString(),
+//          'imageUrl': _editedProduct.imageUrl,
+          'imageUrl': '',
+        };
+        // Because I'm using a controller for the imageUrl, initializing the TextFormField works like this
+        _imageUrlController.text = _editedProduct.imageUrl;
+      }
+    }
+
+    _isInit = false;
+    super.didChangeDependencies();
   }
 
   // Instead of always wanting the user to click on the done button for the image for the image to
@@ -64,14 +103,19 @@ class _EditProductScreenState extends State<EditProductScreen> {
     // into a global map.
     _form.currentState.save();
 
-//    print(_editedProduct.title);
-//    print(_editedProduct.description);
-//    print(_editedProduct.price);
-//    print(_editedProduct.imageUrl);
-
-//    Adds the new product. Listen is false because idc about changes to the list, I just want to perform an action
-    Provider.of<ProductsProvider>(context, listen: false).addProduct(_editedProduct);
-    Navigator.of(context).pop();
+    // Check to see if we're editing a product or adding a product
+    // if the product exists then update the product
+    if (_editedProduct.id != null) {
+      Provider.of<ProductsProvider>(context, listen: false)
+          .updateProduct(_editedProduct.id, _editedProduct);
+      Navigator.of(context).pop();
+    }
+    // else if the product doesn't exist, add the product
+    else {
+      //    Adds the new product. Listen is false because idc about changes to the list, I just want to perform an action
+      Provider.of<ProductsProvider>(context, listen: false).addProduct(_editedProduct);
+      Navigator.of(context).pop();
+    }
   }
 
   @override
@@ -94,6 +138,8 @@ class _EditProductScreenState extends State<EditProductScreen> {
             children: [
               TextFormField(
                 decoration: InputDecoration(labelText: 'Title'),
+                // sets the initial value of the TextFormField. This is mostly used for editing products
+                initialValue: _initValues['title'],
                 // textInputAction = Controls what the bottom right will show in the soft keyboard
                 textInputAction: TextInputAction.next,
                 // This will be called whenever the textInputAction is pressed
@@ -118,12 +164,14 @@ class _EditProductScreenState extends State<EditProductScreen> {
                     price: _editedProduct.price,
                     description: _editedProduct.description,
                     imageUrl: _editedProduct.imageUrl,
-                    id: null,
+                    id: _editedProduct.id,
+                    isFavorite: _editedProduct.isFavorite,
                   );
                 },
               ),
               TextFormField(
                 decoration: InputDecoration(labelText: 'Price'),
+                initialValue: _initValues['price'],
                 // textInputAction = Controls what the bottom right will show in the soft keyboard
                 textInputAction: TextInputAction.next,
                 // Makes it so that only numbers can be entered in the soft keyboard
@@ -152,12 +200,14 @@ class _EditProductScreenState extends State<EditProductScreen> {
                     price: double.parse(value),
                     description: _editedProduct.description,
                     imageUrl: _editedProduct.imageUrl,
-                    id: null,
+                    id: _editedProduct.id,
+                    isFavorite: _editedProduct.isFavorite,
                   );
                 },
               ),
               TextFormField(
                 decoration: InputDecoration(labelText: 'Description'),
+                initialValue: _initValues['description'],
                 maxLines: 3,
                 focusNode: _descriptionFocusNode,
                 keyboardType: TextInputType.multiline,
@@ -177,7 +227,8 @@ class _EditProductScreenState extends State<EditProductScreen> {
                     price: _editedProduct.price,
                     description: value,
                     imageUrl: _editedProduct.imageUrl,
-                    id: null,
+                    id: _editedProduct.id,
+                    isFavorite: _editedProduct.isFavorite,
                   );
                 },
               ),
@@ -203,6 +254,8 @@ class _EditProductScreenState extends State<EditProductScreen> {
                   ),
                   Expanded(
                     child: TextFormField(
+                      // Can't use both initialValue and controller.
+//                      initialValue: _initValues['imageUrl'],
                       decoration: InputDecoration(labelText: 'Image Url'),
                       keyboardType: TextInputType.url,
                       textInputAction: TextInputAction.done,
@@ -231,7 +284,8 @@ class _EditProductScreenState extends State<EditProductScreen> {
                           price: _editedProduct.price,
                           description: _editedProduct.description,
                           imageUrl: value,
-                          id: null,
+                          id: _editedProduct.id,
+                          isFavorite: _editedProduct.isFavorite,
                         );
                       },
 
