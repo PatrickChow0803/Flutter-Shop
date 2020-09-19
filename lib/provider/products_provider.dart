@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
 import 'product.dart';
+// as http here to help avoid name clashes
+import 'package:http/http.dart' as http;
+
+// Used to convert my objects into JSON so that the data can be attached to HTTP requests.
+import 'dart:convert';
 
 class ProductsProvider with ChangeNotifier {
   List<Product> _items = [
@@ -56,6 +61,24 @@ class ProductsProvider with ChangeNotifier {
   }
 
   void addProduct(Product product) {
+    // need to add the json when working with Firebase
+    // The products list is automatically created by Firebase
+    const url = 'https://flutter-shop-7d47e.firebaseio.com/products.json';
+
+    // sends a post request to the url passed as the argument
+    // body is the data that gets attached to the post request
+    http.post(
+      url,
+      // Pass in a map to encode to let it know how the json data should be.
+      body: json.encode({
+        'title': product.title,
+        'description': product.description,
+        'imageUrl': product.imageUrl,
+        'price': product.price,
+        'isFavorite': product.isFavorite,
+      }),
+    );
+
     final newProduct = Product(
       title: product.title,
       price: product.price,
