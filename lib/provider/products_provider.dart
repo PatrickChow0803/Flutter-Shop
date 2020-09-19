@@ -67,7 +67,10 @@ class ProductsProvider with ChangeNotifier {
 
     // sends a post request to the url passed as the argument
     // body is the data that gets attached to the post request
-    http.post(
+    // CTRL + Q highlighting the .post is very helpful
+    // .post returns a future!!!
+    http
+        .post(
       url,
       // Pass in a map to encode to let it know how the json data should be.
       body: json.encode({
@@ -77,21 +80,27 @@ class ProductsProvider with ChangeNotifier {
         'price': product.price,
         'isFavorite': product.isFavorite,
       }),
-    );
+    )
+        // .then is only called after the server sends a response back.
+        // response is what's given back from the server
+        .then((response) {
+      // This gives me a MAP that contains the unique id that the server gives back for a product
+//      print(json.decode(response.body));
+      final newProduct = Product(
+        title: product.title,
+        price: product.price,
+        description: product.description,
+        imageUrl: product.imageUrl,
+        // json.decode(response.body) gives back a MAP!!! with a key called 'name', hence use the key ['name']
+        id: json.decode(response.body)['name'],
+      );
+      // Adds an product to the end of the list
+      _items.add(newProduct);
 
-    final newProduct = Product(
-      title: product.title,
-      price: product.price,
-      description: product.description,
-      imageUrl: product.imageUrl,
-      id: DateTime.now().toString(),
-    );
-    // Adds an product to the end of the list
-    _items.add(newProduct);
-
-    // Adds a product to the start of the list
-    // _items.insert(0, newProduct);
-    notifyListeners();
+      // Adds a product to the start of the list
+      // _items.insert(0, newProduct);
+      notifyListeners();
+    });
   }
 
   void updateProduct(String id, Product newProduct) {
