@@ -120,7 +120,31 @@ class _EditProductScreenState extends State<EditProductScreen> {
     // else if the product doesn't exist, add the product
     else {
       //    Adds the new product. Listen is false because idc about changes to the list, I just want to perform an action
-      Provider.of<ProductsProvider>(context, listen: false).addProduct(_editedProduct)
+      Provider.of<ProductsProvider>(context, listen: false)
+          .addProduct(_editedProduct)
+          .catchError((error) {
+        // return showDialog here because it's of data type future. This causes the .then to be called only when after clicking the FlatButton
+        return showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: Text('An error occured!'),
+            content: Text('Something went wrong.'),
+            actions: [
+              FlatButton(
+                child: Text('Okay'),
+                onPressed: () {
+                  print('Did this work???');
+                  // This pop gets rid of the AlertDialog
+                  Navigator.of(context).pop();
+
+                  // This pop moves back to the user_products_screen
+                  Navigator.of(context).pop();
+                },
+              )
+            ],
+          ),
+        );
+      })
           // The .then is for working with a loading indicator. Look at how .addProduct is coded
           .then((response) {
         setState(() {

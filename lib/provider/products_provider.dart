@@ -102,6 +102,11 @@ class ProductsProvider with ChangeNotifier {
       // Adds a product to the start of the list
       // _items.insert(0, newProduct);
       notifyListeners();
+    }).catchError((error) {
+      print('error');
+      // This throws the error object up the widget tree.
+      // Thus the error is thrown to edit_product_screen since that screen calls this addProduct method.
+      throw error;
     });
   }
 
