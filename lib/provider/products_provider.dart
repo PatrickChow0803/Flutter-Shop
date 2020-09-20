@@ -60,7 +60,8 @@ class ProductsProvider with ChangeNotifier {
     return _items.firstWhere((prod) => prod.id == id);
   }
 
-  void addProduct(Product product) {
+  // Making this a Future<void> to display a loading indicator.
+  Future<void> addProduct(Product product) {
     // need to add the json when working with Firebase
     // The products list is automatically created by Firebase
     const url = 'https://flutter-shop-7d47e.firebaseio.com/products.json';
@@ -69,7 +70,8 @@ class ProductsProvider with ChangeNotifier {
     // body is the data that gets attached to the post request
     // CTRL + Q highlighting the .post is very helpful
     // .post returns a future!!!
-    http
+    // TYPED IN RETURN HERE BECAUSE OF Future<void>
+    return http
         .post(
       url,
       // Pass in a map to encode to let it know how the json data should be.
