@@ -19,6 +19,25 @@ class ProductsOverviewScreen extends StatefulWidget {
 
 class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
   var _showOnlyFavorites = false;
+  var _isInit = true;
+
+  // CAN"T USE of.(context) IN initState() !!!
+  @override
+  void initState() {
+//    Provider.of<ProductsProvider>(context, listen: false).fetchAndSetProducts();
+//    super.initState();
+  }
+
+  // This is run when the widgets have been fully initialized but before build runs for the first time
+  @override
+  void didChangeDependencies() {
+    // This code is here to make it so that the products are only obtained only once
+    if (_isInit) {
+      Provider.of<ProductsProvider>(context).fetchAndSetProducts();
+    }
+    _isInit = false;
+    super.didChangeDependencies();
+  }
 
   @override
   Widget build(BuildContext context) {

@@ -60,6 +60,17 @@ class ProductsProvider with ChangeNotifier {
     return _items.firstWhere((prod) => prod.id == id);
   }
 
+  Future<void> fetchAndSetProducts() async {
+    const url = 'https://flutter-shop-7d47e.firebaseio.com/products.json';
+    try {
+      final response = await http.get(url);
+//      print(response);
+      print(json.decode(response.body));
+    } catch (error) {
+      throw (error);
+    }
+  }
+
   // Making this a Future<void> to display a loading indicator.
   // by using the async keyword, the entire block of code therefore returns a future automatically
   Future<void> addProduct(Product product) async {
