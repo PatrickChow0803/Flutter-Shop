@@ -91,7 +91,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
     super.dispose();
   }
 
-  void _saveForm() {
+  Future<void> _saveForm() async {
     // This will trigger all the validators
     // will return true if there's no error, else false if there's at least one error
     final isValid = _form.currentState.validate();
@@ -119,12 +119,13 @@ class _EditProductScreenState extends State<EditProductScreen> {
     }
     // else if the product doesn't exist, add the product
     else {
-      //    Adds the new product. Listen is false because idc about changes to the list, I just want to perform an action
-      Provider.of<ProductsProvider>(context, listen: false)
-          .addProduct(_editedProduct)
-          .catchError((error) {
-        // return showDialog here because it's of data type future. This causes the .then to be called only when after clicking the FlatButton
-        return showDialog(
+      try {
+        //    Adds the new product. Listen is false because idc about changes to the list, I just want to perform an action
+        // since .addProduct returns a future,use the await keyword here
+        await Provider.of<ProductsProvider>(context, listen: false).addProduct(_editedProduct);
+      } catch (error) {
+        // await keyword here since I want to wait for the user to click on the AlertDialog
+        await showDialog(
           context: context,
           builder: (context) => AlertDialog(
             title: Text('An error occured!'),
@@ -144,14 +145,14 @@ class _EditProductScreenState extends State<EditProductScreen> {
             ],
           ),
         );
-      })
-          // The .then is for working with a loading indicator. Look at how .addProduct is coded
-          .then((response) {
+      }
+      // code within the finally block should always run regardless if it's a pass or fail
+       finally {
         setState(() {
           _isLoading = false;
         });
         Navigator.of(context).pop();
-      });
+      }
     }
   }
 

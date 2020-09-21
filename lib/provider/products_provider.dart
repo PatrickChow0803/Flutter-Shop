@@ -61,7 +61,8 @@ class ProductsProvider with ChangeNotifier {
   }
 
   // Making this a Future<void> to display a loading indicator.
-  Future<void> addProduct(Product product) {
+  // by using the async keyword, the entire block of code therefore returns a future automatically
+  Future<void> addProduct(Product product) async {
     // need to add the json when working with Firebase
     // The products list is automatically created by Firebase
     const url = 'https://flutter-shop-7d47e.firebaseio.com/products.json';
@@ -71,23 +72,23 @@ class ProductsProvider with ChangeNotifier {
     // CTRL + Q highlighting the .post is very helpful
     // .post returns a future!!!
     // TYPED IN RETURN HERE BECAUSE OF Future<void>
-    return http
-        .post(
-      url,
-      // Pass in a map to encode to let it know how the json data should be.
-      body: json.encode({
-        'title': product.title,
-        'description': product.description,
-        'imageUrl': product.imageUrl,
-        'price': product.price,
-        'isFavorite': product.isFavorite,
-      }),
-    )
-        // .then is only called after the server sends a response back.
-        // response is what's given back from the server
-        .then((response) {
-      // This gives me a MAP that contains the unique id that the server gives back for a product
-//      print(json.decode(response.body));
+    // No longer have to type in RETURN here because it's now async
+    // await keyword tells dart that I want to wait for this operation to finish before moving to the next
+    // line in the dart code
+    // response is what's given back from the server
+    try {
+      final response = await http.post(
+        url,
+        // Pass in a map to encode to let it know how the json data should be.
+        body: json.encode({
+          'title': product.title,
+          'description': product.description,
+          'imageUrl': product.imageUrl,
+          'price': product.price,
+          'isFavorite': product.isFavorite,
+        }),
+      );
+      // this code is executed after await http.post is finished
       final newProduct = Product(
         title: product.title,
         price: product.price,
@@ -102,12 +103,12 @@ class ProductsProvider with ChangeNotifier {
       // Adds a product to the start of the list
       // _items.insert(0, newProduct);
       notifyListeners();
-    }).catchError((error) {
+    } catch (error) {
       print('error');
       // This throws the error object up the widget tree.
       // Thus the error is thrown to edit_product_screen since that screen calls this addProduct method.
       throw error;
-    });
+    }
   }
 
   void updateProduct(String id, Product newProduct) {
