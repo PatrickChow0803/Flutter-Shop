@@ -19,6 +19,40 @@ class ProductsOverviewScreen extends StatefulWidget {
 
 class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
   var _showOnlyFavorites = false;
+  var _isInit = true;
+  var _isLoading = false;
+
+  // CAN"T USE of.(context) IN initState() !!!
+  @override
+  void initState() {
+//    Provider.of<ProductsProvider>(context, listen: false).fetchAndSetProducts();
+//    super.initState();
+  }
+
+  Future<void> _refreshProducts(BuildContext context) async {
+    Provider.of<ProductsProvider>(context, listen: false).fetchAndSetProducts();
+  }
+
+  // This is run when the widgets have been fully initialized but before build runs for the first time
+  // DO NOT USE KEYWORD ASYNC WHEN WORKING WITH METHODS THAT ARE OVERRIDEN!!!
+  @override
+  void didChangeDependencies() {
+    // This code is here to make it so that the products are only obtained only once
+    if (_isInit) {
+      setState(() {
+        _isLoading = true;
+      });
+      // sets _isLoading to false only AFTER .fetchAndSetProducts() is completed
+      Provider.of<ProductsProvider>(context).fetchAndSetProducts().then((_) {
+        setState(() {
+          _isLoading = false;
+          print("this get called");
+        });
+      });
+    }
+    _isInit = false;
+    super.didChangeDependencies();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -78,7 +112,10 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
         ],
       ),
       drawer: AppDrawer(),
-      body: ProductsGrid(_showOnlyFavorites),
+      body: _isLoading
+          ? Center(child: CircularProgressIndicator())
+          : RefreshIndicator(
+              onRefresh: () => _refreshProducts(context), child: ProductsGrid(_showOnlyFavorites)),
     );
   }
 }

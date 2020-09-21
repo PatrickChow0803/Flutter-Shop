@@ -1,4 +1,6 @@
 import 'package:flutter/foundation.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 // This class used to be in the models package.
 // This was moved to the provider package because isFavorite is dynamic.
@@ -21,8 +23,22 @@ class Product with ChangeNotifier {
     this.isFavorite = false,
   });
 
-  void toggleFavoriteStatus() {
+  Future<void> toggleFavoriteStatus() async {
+    final oldStatus = isFavorite;
     isFavorite = !isFavorite;
     notifyListeners();
+    try {
+      final url = 'https://flutter-shop-7d47e.firebaseio.com/products/$id.json';
+      final response = await http.patch(url, body: json.encode({'isFavorite': isFavorite}));
+
+      if (response.statusCode >= 400) {
+        isFavorite = oldStatus;
+        notifyListeners();
+      }
+      // Incase the favorite status toggle didn't work properly, make the favorite the old value
+    } catch (error) {
+      isFavorite = oldStatus;
+      notifyListeners();
+    }
   }
 }
