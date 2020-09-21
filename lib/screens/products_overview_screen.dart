@@ -46,6 +46,7 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
       Provider.of<ProductsProvider>(context).fetchAndSetProducts().then((_) {
         setState(() {
           _isLoading = false;
+          print("this get called");
         });
       });
     }

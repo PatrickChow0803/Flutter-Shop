@@ -110,7 +110,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
     // Check to see if we're editing a product or adding a product
     // if the product exists then update the product
     if (_editedProduct.id != null) {
-      Provider.of<ProductsProvider>(context, listen: false)
+      await Provider.of<ProductsProvider>(context, listen: false)
           .updateProduct(_editedProduct.id, _editedProduct);
       setState(() {
         _isLoading = false;
