@@ -29,6 +29,10 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
 //    super.initState();
   }
 
+  Future<void> _refreshProducts(BuildContext context) async {
+    Provider.of<ProductsProvider>(context, listen: false).fetchAndSetProducts();
+  }
+
   // This is run when the widgets have been fully initialized but before build runs for the first time
   // DO NOT USE KEYWORD ASYNC WHEN WORKING WITH METHODS THAT ARE OVERRIDEN!!!
   @override
@@ -109,7 +113,8 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
       drawer: AppDrawer(),
       body: _isLoading
           ? Center(child: CircularProgressIndicator())
-          : ProductsGrid(_showOnlyFavorites),
+          : RefreshIndicator(
+              onRefresh: () => _refreshProducts(context), child: ProductsGrid(_showOnlyFavorites)),
     );
   }
 }
