@@ -69,6 +69,7 @@ class ProductsProvider with ChangeNotifier {
       // The returned data is a nested map. Therefore use keyword dynamic to refer to the nested map
       // Thus use Map<String (The ID of the product), dynamic (For nested map that contains the information of a product)
       final extractedData = json.decode(response.body) as Map<String, dynamic>;
+      if (extractedData == null) return;
 
       final List<Product> loadedProducts = [];
 
