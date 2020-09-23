@@ -7,9 +7,22 @@ class Auth with ChangeNotifier {
   String _token;
 
   // Used to hold when the token will expire
-  DateTime _expiryDare;
+  DateTime _expiryDate;
 
   String _userId;
+
+  bool get isAuth {
+    // if token isn't null, then we're authenticated and vice versa.
+    return token != null;
+  }
+
+  String get token {
+    // Token is valid
+    if (_expiryDate != null && _expiryDate.isAfter(DateTime.now()) && _token != null) {
+      return _token;
+    }
+    return null;
+  }
 
   Future<void> signup(String email, String password) async {
     const url =
@@ -26,6 +39,17 @@ class Auth with ChangeNotifier {
       if (responseData['error'] != null) {
         throw HttpException(responseData['error']['message']);
       }
+
+      // these are the values given back from the server
+      _token = responseData['idToken'];
+      _userId = responseData['localId'];
+
+      // The expiration time of the token is the current time + the time that's given back from the server.
+      // The time that's given back from the server is of type String so therefore make it an int.
+      _expiryDate = DateTime.now().add(Duration(seconds: int.parse(responseData['expiresIn'])));
+
+      // Used to trigger the consumer widget inside of main.dart to let the app know if the user is authenticated or not
+      notifyListeners();
     } catch (error) {
       throw error;
     }
